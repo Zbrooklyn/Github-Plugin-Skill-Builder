@@ -4,33 +4,41 @@
 
 This project ships as a **ChatGPT plugin containing skills**, not as a standalone ChatGPT Skill.
 
-Acceptance requires normal ChatGPT plugin usage when installed (for example via `@GitHub Plugin Skill Builder` or the ChatGPT plugin picker where supported). A standalone Skill install does not satisfy V0.
+Acceptance requires normal ChatGPT plugin usage when installed, for example through `@GitHub Plugin Skill Builder` or the ChatGPT plugin picker where supported. A standalone Skill install does not satisfy V0.
 
-Do not add an MCP server merely to satisfy plugin packaging. The target is a skills-only plugin unless executable tools are genuinely required later.
+The V0 architecture is deliberately **skills-only and serverless**: the public GitHub repository is the plugin package host/source of truth. Do not add an MCP server merely to satisfy plugin packaging.
 
-## V0 — Prove GitHub-hosted plugin skills
+## V0 — Prove the GitHub-hosted skills-only plugin loop
 
-Status: in progress — repository is published and valid; ChatGPT import is blocked on an eligible workspace surface
+Status: **in progress — GitHub root-package refactor complete; external ChatGPT import/invocation/sync proof remains**
 
 Completed:
 
-- Publish this repository publicly on GitHub.
-- Verify the marketplace manifest, plugin manifest, skill frontmatter, repository visibility, and default branch from GitHub.
-- Lock the requirement that this must be installed as a plugin containing skills, not as a standalone Skill.
+- Publish the repository publicly on GitHub.
+- Make the repository root the plugin package, following the Superpowers-style layout.
+- Add root `.claude-plugin/marketplace.json` with `"source": "./"`.
+- Add root `.claude-plugin/plugin.json`.
+- Move `creating-github-plugin-skills` to root `skills/`.
+- Remove the obsolete nested `plugins/github-plugin-skill-builder/` package.
+- Preserve the deterministic V0 invocation diagnostic.
+- Add exact ChatGPT GitHub-marketplace installation and sync instructions.
+- Lock the requirement that this installs as a plugin containing skills, not as a standalone Skill.
+- Lock the requirement that V0 uses no MCP server, Server URL, app template, OAuth backend, database, or runtime hosting.
 
-Remaining:
+Remaining external acceptance tests:
 
-- Import the marketplace into an eligible ChatGPT workspace using `Workspace settings > Plugins > Add > Import marketplace`.
-- Install the imported `GitHub Plugin Skill Builder` as a plugin.
-- Prove it is invokable from a normal ChatGPT conversation through the plugin surface.
-- Prove the `creating-github-plugin-skills` skill inside the plugin is discovered and usable.
-- Change the skill in GitHub, select `Sync now`, and prove the changed behavior is observed.
+- Use a ChatGPT workspace/account surface that exposes **Workspace settings → Plugins → Add → Import marketplace**.
+- Import `https://github.com/Zbrooklyn/Github-Plugin-Skill-Builder` with Path blank.
+- Install the imported **GitHub Plugin Skill Builder** plugin.
+- Invoke it from a normal ChatGPT conversation through the plugin surface.
+- Send `Run GitHub Plugin Skill Builder V0 test` and observe the exact diagnostic marker from the GitHub-hosted skill.
+- Change the diagnostic marker in GitHub, select **Sync now**, and prove the changed behavior is observed in ChatGPT.
 
-Current ChatGPT constraint verified on 2026-09-03: OpenAI documents GitHub marketplace import as a workspace-admin capability. A personal Plus workspace may not expose the import control. The plugin is also not in the public Plugin Directory, so there is no catalog-install fallback yet.
+Current distribution constraint verified on 2026-09-03: OpenAI documents GitHub marketplace import as a workspace-admin import path. The personal Plus UI tested in this project exposes **Add plugin** as the custom MCP Server URL form instead of **Import marketplace**. That Server URL form cannot use a static GitHub repository URL; this is a product/distribution-surface limitation, not a repository-format failure.
 
 ## V1 — GitHub Repository Management Skill
 
-Status: planned — priority next capability
+Status: planned — priority next capability after V0 proof
 
 Add a reusable GitHub repository-management skill **inside this plugin**, covering:
 
@@ -52,5 +60,6 @@ This requirement comes from a proven real workflow: Claude Code previously creat
 - automated manifest validation;
 - CI checks for plugin structure and skill frontmatter;
 - versioning/release conventions;
+- public/catalog distribution investigation for personal ChatGPT installation;
 - compatibility tests across ChatGPT surfaces;
 - additional reusable plugin-building skills based on real failures and repeated needs.
