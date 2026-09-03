@@ -1,5 +1,19 @@
 # Project Memory
 
+## Distribution invariant — 2026-09-03
+
+This project must ship as a **ChatGPT plugin that contains skills**, not as a standalone ChatGPT Skill.
+
+Reason: the product requirement is normal ChatGPT chat usage through the plugin surface (for example `@GitHub Plugin Skill Builder` or the ChatGPT plugin picker where supported). A standalone Skill is a different product surface with different account/workspace availability and must not be substituted for this goal.
+
+The intended architecture is:
+
+`GitHub repository → plugin marketplace/manifest → plugin containing skills → installed ChatGPT plugin → normal ChatGPT conversation`
+
+A skills-only plugin is still a plugin. OpenAI currently documents that plugins may contain only skills and require no app connection. Once an eligible plugin is installed, OpenAI documents using it in ChatGPT through an `@` mention or the `+` menu where supported.
+
+Do not add an MCP server merely to make the package count as a plugin. In fact, OpenAI currently warns that GitHub-imported plugins declaring MCP server files may be labeled Desktop only, which conflicts with the goal of normal ChatGPT web/chat availability.
+
 ## Standing decision — 2026-09-03
 
 The roadmap must include a reusable **GitHub Repository Management Skill**.
