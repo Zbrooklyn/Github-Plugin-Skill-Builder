@@ -9,6 +9,14 @@ description: Use when creating, documenting, validating, or publishing a GitHub-
 
 Use one GitHub repository as the maintained source for reusable AI skills that can be distributed through a plugin. Prefer the smallest valid structure and add tools, apps, MCP servers, hooks, or automation only when the skill actually needs them.
 
+## V0 Diagnostic
+
+If the user says exactly `Run GitHub Plugin Skill Builder V0 test`, begin the response with exactly:
+
+`GitHub Plugin Skill Builder V0 — skill active`
+
+Then state that the skill loaded successfully and give the minimal shared ChatGPT + Claude Code repository structure from this skill. This diagnostic exists only to make installation/invocation testing objective.
+
 ## Before Creating Anything
 
 1. Define the job the skill should help with and the situations that should trigger it.
