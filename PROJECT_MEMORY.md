@@ -12,10 +12,17 @@ Evidence already established: Claude Code previously created `Zbrooklyn/claude-s
 
 This is a roadmap commitment, not part of V0 implementation. V0 remains intentionally minimal until the GitHub-hosted plugin loop is proven.
 
-## V0 ChatGPT import state — 2026-09-03
+## V0 ChatGPT distribution finding — 2026-09-03
 
-The public GitHub repository and manifests are live and verified. The remaining ChatGPT proof requires an eligible workspace import surface.
+The target is the **Superpowers-style plugin model**: a GitHub-hosted plugin package containing reusable skills that can be invoked from normal ChatGPT conversations when the plugin is installed. Do not replace this goal with a standalone MCP server or a one-off uploaded skill.
 
-OpenAI currently documents GitHub marketplace import under `Workspace settings > Plugins > Add > Import marketplace`, available to workspace admins/owners. OpenAI currently documents Skills for eligible Business, Enterprise, Healthcare, and Edu accounts. A personal Plus workspace may not expose this import control.
+Important distinction established from current OpenAI documentation and the Superpowers repositories:
 
-The plugin is not currently listed in the public Plugin Directory, so there is no catalog-install fallback. Do not misdiagnose this as a repository or manifest failure.
+- `obra/superpowers` is the upstream public GitHub project.
+- OpenAI also maintains a curated packaged copy under `openai/plugins/plugins/superpowers`.
+- A public GitHub repository by itself does **not** automatically become installable in a personal ChatGPT workspace.
+- OpenAI's documented direct GitHub marketplace import flow is `Workspace settings > Plugins > Add > Import marketplace` and is an administrator/workspace feature.
+- The personal Plus UI tested on 2026-09-03 exposes `Add plugin` as the custom MCP app form (Server URL + authentication), not the GitHub marketplace importer.
+- Therefore the repository/manifests can be valid while the personal Plus workspace still lacks a direct arbitrary-GitHub-plugin installation path.
+
+For a Superpowers-equivalent experience in personal ChatGPT, the missing distribution step is getting the plugin into an installable ChatGPT plugin catalog/surface, or testing from a workspace that exposes GitHub marketplace import. Do not misdiagnose this as a manifest or repository failure.
