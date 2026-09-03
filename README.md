@@ -1,95 +1,164 @@
 # GitHub Plugin Skill Builder
 
-A minimal reference project for creating reusable AI skills that live in GitHub and can be distributed as plugins to ChatGPT and Claude Code.
+A public GitHub-hosted **skills-only plugin** for ChatGPT-compatible plugin workflows.
 
-The first version intentionally contains one meta-skill: **creating-github-plugin-skills**. Its job is to document the process we will use to create future GitHub-hosted plugin skills correctly.
+The repository itself is the plugin package and source of truth. There is no runtime server, MCP endpoint, OAuth backend, database, or other hosting layer in V0.
 
-## Why this project exists
+Informally, this is the **serverless plugin** pattern: GitHub hosts the manifests, skills, Markdown instructions, and supporting documentation that a compatible plugin importer ingests.
 
-Instead of copying skill instructions between AI products, the goal is to keep the maintained version in GitHub and let supported products import or sync that source.
+## What this project is proving
 
-This repository uses a Claude-compatible marketplace because OpenAI currently supports `.claude-plugin/marketplace.json` as a GitHub marketplace import format, while the same marketplace structure is usable by Claude Code.
+The experiment is deliberately narrow:
 
-## Structure
+> Can one public GitHub repository be the complete source package for a ChatGPT plugin containing reusable skills, without operating a traditional plugin/MCP server?
+
+The intended flow is:
 
 ```text
-github-plugin-skill-builder/
-├── .claude-plugin/
-│   └── marketplace.json
-└── plugins/
-    └── github-plugin-skill-builder/
-        ├── .claude-plugin/
-        │   └── plugin.json
-        └── skills/
-            └── creating-github-plugin-skills/
-                └── SKILL.md
+Public GitHub repository
+        ↓
+plugin marketplace + plugin manifest
+        ↓
+skills/ + Markdown documentation
+        ↓
+ChatGPT GitHub plugin importer
+        ↓
+installed plugin
+        ↓
+normal ChatGPT plugin usage
 ```
 
-The actual repository root is `github-plugin-skill-builder/`; the tree above shows the files beneath it.
+This must be installed as a **plugin containing skills**, not as a standalone ChatGPT Skill.
 
-## What V0 proves
+## Repository structure
 
-V0 is deliberately small. It is meant to prove five things before the project grows:
+The repository root is the plugin package, following the same root-package pattern used by Superpowers:
 
-1. GitHub can be the source of truth.
-2. The marketplace and plugin manifests are accepted.
-3. The skill is discovered when its trigger applies.
-4. The skill's instructions are usable in practice.
-5. A later GitHub change can be synced and observed.
+```text
+Github-Plugin-Skill-Builder/
+├── .claude-plugin/
+│   ├── marketplace.json
+│   └── plugin.json
+├── skills/
+│   └── creating-github-plugin-skills/
+│       └── SKILL.md
+├── INSTALL-CHATGPT.md
+├── README.md
+├── ROADMAP.md
+├── PROJECT_MEMORY.md
+└── LICENSE
+```
 
-## ChatGPT
+The marketplace entry uses:
 
-OpenAI currently allows workspace administrators to import plugin marketplaces from public or private GitHub repositories.
+```json
+"source": "./"
+```
+
+That means the repository root itself is the plugin source.
+
+## ChatGPT installation
+
+On a ChatGPT workspace that exposes GitHub marketplace import:
 
 1. Open **Workspace settings → Plugins**.
 2. Select **Add → Import marketplace**.
-3. Enter the repository URL: `https://github.com/Zbrooklyn/Github-Plugin-Skill-Builder`.
-4. Leave Path empty because the marketplace manifest is at the repository root.
-5. Choose the default branch for ongoing updates, or pin a tag/commit when you want fixed behavior.
-6. Import the marketplace and review the resulting plugin before making it available.
-
-Availability depends on the ChatGPT plan, workspace, role, and rollout. Personal ChatGPT accounts do not necessarily expose workspace marketplace import controls.
-
-## Claude Code
-
-After the repository is public, add the marketplace and install the plugin:
+3. Use this repository as Source:
 
 ```text
-/plugin marketplace add Zbrooklyn/Github-Plugin-Skill-Builder
-/plugin install github-plugin-skill-builder@github-plugin-skill-builder
+https://github.com/Zbrooklyn/Github-Plugin-Skill-Builder
 ```
 
-## Creating the next skill
+4. Leave **Path** blank.
+5. Leave **Branch/tag/commit** blank to follow the default `main` branch, or pin a revision when fixed behavior is desired.
+6. Import the marketplace, open **GitHub Plugin Skill Builder**, and install/enable the plugin for the intended role.
 
-Once this plugin is installed, ask the AI to create a GitHub-hosted plugin skill. The `creating-github-plugin-skills` skill should provide the baseline structure, authoring rules, validation checklist, and publishing approach.
+See [`INSTALL-CHATGPT.md`](INSTALL-CHATGPT.md) for the exact test procedure.
 
-The project should then improve itself only from evidence gathered while creating and testing real skills.
+### Important: the MCP "Server URL" form is different
 
-## Roadmap
+If **Add plugin** opens a form asking for **Server URL**, authentication, OAuth, or custom headers, that is the MCP/app creation path. Do **not** paste this GitHub repository URL into that field.
 
-The next planned reusable capability is a **GitHub Repository Management Skill**. It will formalize repository creation, initialization, connected/local fallback behavior, credential safety, and read-back verification so future plugin projects do not depend on manual repository setup. See [`ROADMAP.md`](ROADMAP.md) and [`PROJECT_MEMORY.md`](PROJECT_MEMORY.md).
+A static GitHub repository is not an MCP protocol endpoint, and no manifest change can make a repository URL behave like one. This project intentionally avoids an MCP server because V0 is a skills-only plugin.
 
-## V0 boundaries
+OpenAI currently documents GitHub repositories through the separate **Import marketplace** flow. Availability of that flow depends on account/workspace/role/rollout.
 
-Not included yet:
+## V0 skill
 
-- MCP servers
-- connected apps
-- hooks
-- code generators
-- CI/CD
-- automated publishing
-- multiple plugins
+The first plugin skill is:
 
-Those should only be introduced after the minimal GitHub → plugin → skill loop is proven.
+```text
+creating-github-plugin-skills
+```
 
-## Sources of truth
+It documents the minimal GitHub-hosted plugin structure, skill-authoring rules, validation checks, and publishing approach we will use when building future plugins.
 
-Before changing the format, verify current platform documentation. The plugin ecosystem is evolving and repository documentation should not be treated as permanently correct.
+For objective installation testing, the skill contains this exact diagnostic prompt:
 
-- OpenAI Help: Plugins in ChatGPT and Codex
-- OpenAI Help: Importing and syncing plugin marketplaces from GitHub
-- OpenAI's `openai-developers-for-claude` repository as a public marketplace/plugin structure example
+```text
+Run GitHub Plugin Skill Builder V0 test
+```
+
+A correctly loaded skill must begin its answer with:
+
+```text
+GitHub Plugin Skill Builder V0 — skill active
+```
+
+## Why there is no MCP server
+
+A plugin can package skills without connecting an external app. V0 therefore has no `mcp.json`, `.mcp.json`, Server URL, or executable backend.
+
+This is intentional. Adding MCP configuration just to make the repository "feel" like a plugin would change the architecture and can limit where an imported plugin runs.
+
+If a future skill genuinely needs executable external actions, that capability can be added deliberately as a later layer. It is not required for the GitHub-hosted skills-only experiment.
+
+## GitHub is the source of truth
+
+The maintained content lives here. The target update loop is:
+
+```text
+edit GitHub → merge → plugin marketplace sync → changed behavior in ChatGPT
+```
+
+V0 is not considered proven until we observe that full loop from an eligible ChatGPT plugin surface.
+
+## V0 status
+
+Repository packaging:
+
+- public GitHub source: complete
+- root marketplace manifest: complete
+- root plugin manifest: complete
+- root `skills/` package: complete
+- no runtime/MCP server: confirmed by design
+- deterministic invocation diagnostic: complete
+
+External proof still required:
+
+- import this repository into a ChatGPT workspace that exposes GitHub marketplace import;
+- install it as a plugin;
+- invoke it from a normal ChatGPT conversation;
+- verify the V0 diagnostic;
+- change the GitHub skill, run marketplace sync, and observe the changed behavior.
+
+## Next capability
+
+After V0 is proven, the priority next skill is a **GitHub Repository Management Skill** inside this plugin. It will formalize safe repository creation, initialization, credential handling, connected/local execution differences, and read-back verification.
+
+See [`ROADMAP.md`](ROADMAP.md) and [`PROJECT_MEMORY.md`](PROJECT_MEMORY.md).
+
+## Compatibility
+
+The package uses the Claude-compatible plugin marketplace format because OpenAI's GitHub marketplace importer currently supports `.claude-plugin/marketplace.json` and `.claude-plugin/plugin.json`. The root layout also mirrors the upstream Superpowers packaging pattern.
+
+Before changing manifest fields or installation instructions, verify the current platform documentation because the plugin ecosystem is evolving.
+
+## References
+
+- OpenAI Help — Importing and syncing plugin marketplaces from GitHub: https://help.openai.com/en/articles/20001504
+- OpenAI Help — Plugins in ChatGPT and Codex: https://help.openai.com/en/articles/20001256
+- Superpowers upstream repository: https://github.com/obra/superpowers
 
 ## License
 
