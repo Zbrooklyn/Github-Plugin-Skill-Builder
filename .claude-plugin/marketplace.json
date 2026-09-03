@@ -1,18 +1,18 @@
 {
   "name": "github-plugin-skill-builder",
+  "description": "Development marketplace for the GitHub Plugin Skill Builder skills-only plugin.",
   "owner": {
     "name": "Zbrooklyn"
   },
   "plugins": [
     {
       "name": "github-plugin-skill-builder",
-      "displayName": "GitHub Plugin Skill Builder",
-      "description": "Create and document GitHub-hosted AI plugin skills for ChatGPT and Claude Code.",
+      "description": "GitHub-hosted skills-only plugin for creating, validating, and publishing reusable AI plugin skills.",
+      "version": "0.1.0",
+      "source": "./",
       "author": {
         "name": "Zbrooklyn"
-      },
-      "repository": "https://github.com/Zbrooklyn/Github-Plugin-Skill-Builder",
-      "source": "./plugins/github-plugin-skill-builder"
+      }
     }
   ]
 }
