@@ -2,12 +2,21 @@
 
 ## V0 — Prove GitHub-hosted plugin skills
 
-Status: in progress
+Status: in progress — repository is published and valid; ChatGPT import is blocked on an eligible workspace surface
+
+Completed:
 
 - Publish this repository publicly on GitHub.
-- Connect/import it into supported ChatGPT and Claude Code plugin surfaces.
+- Verify the marketplace manifest, plugin manifest, skill frontmatter, repository visibility, and default branch from GitHub.
+
+Remaining:
+
+- Import the marketplace into an eligible ChatGPT workspace using `Workspace settings > Plugins > Add > Import marketplace`.
 - Prove the `creating-github-plugin-skills` skill is discovered and usable.
-- Change the skill in GitHub, sync it, and prove the changed behavior is observed.
+- Change the skill in GitHub, select `Sync now`, and prove the changed behavior is observed.
+- Prove the same marketplace/skill path in Claude Code.
+
+Current ChatGPT constraint verified on 2026-09-03: OpenAI documents GitHub marketplace import as a workspace-admin capability, and Skills are currently documented for eligible Business, Enterprise, Healthcare, and Edu accounts. A personal Plus workspace may not expose the import control. The plugin is also not in the public Plugin Directory, so there is no catalog-install fallback yet.
 
 ## V1 — GitHub Repository Management Skill
 
